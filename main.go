@@ -6,14 +6,14 @@ import (
 )
 
 func main() {
-	g := Game {term: GetTerminal(), m: CreateMap()}
-	g.init()
-	defer g.end()
+	game := Game{term: GetTerminal(), m: CreateMap()}
+	game.init()
+	defer game.end()
 
-	g.draw()
+	game.draw()
 
 	for {
-		ev := termbox.PollEvent();
+		ev := termbox.PollEvent()
 		if ev.Key == termbox.KeyCtrlQ {
 			break
 		}
