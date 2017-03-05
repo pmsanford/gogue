@@ -1,8 +1,9 @@
 package main
 
 type Game struct {
-	term Terminal
-	m Map
+	term   Terminal
+	m      Map
+	player Player
 }
 
 func (g Game) init() {
@@ -15,5 +16,6 @@ func (g Game) end() {
 
 func (g Game) draw() {
 	g.m.draw(g.term)
+	g.player.draw(g.term)
 	g.term.flush()
 }
