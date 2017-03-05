@@ -6,17 +6,11 @@ import (
 )
 
 func main() {
-	err := termbox.Init()
-	if err != nil {
-		panic(err)
-	}
-	defer termbox.Close()
+	g := Game {term: GetTerminal(), m: CreateMap()}
+	g.init()
+	defer g.end()
 
-	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
-
-	print_tb(0, 0, termbox.ColorWhite, termbox.ColorBlack, "Hello World")
-
-	termbox.Flush()
+	g.draw()
 
 	for {
 		ev := termbox.PollEvent();
