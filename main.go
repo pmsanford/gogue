@@ -13,9 +13,22 @@ func main() {
 	game.draw()
 
 	for {
+		game.draw()
 		ev := termbox.PollEvent()
-		if ev.Key == termbox.KeyCtrlQ {
+		if ev.Ch == 'q' {
 			break
+		}
+		if ev.Ch == 'k' {
+			game.player.loc.y -= 1
+		}
+		if ev.Ch == 'j' {
+			game.player.loc.y += 1
+		}
+		if ev.Ch == 'h' {
+			game.player.loc.x -= 1
+		}
+		if ev.Ch == 'l' {
+			game.player.loc.x += 1
 		}
 	}
 }
