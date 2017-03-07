@@ -1,13 +1,23 @@
 package main
 
 type Game struct {
-	term   Terminal
+	term          Terminal
+	active_state  game_state
+	display_state game_state
+	input         Input
+}
+
+type game_state struct {
 	m      Map
 	player Player
-	input  Input
+}
+
+func new_game() Game {
+	return Game{term: GetTerminal(), active_state: game_state{m: CreateMap(), player: Player{hp: 100, loc: Location{x: 5, y: 5}, char: '@', color: Red}}, input: GetInput()}
 }
 
 func (g Game) init() {
+	g.display_state = g.active_state
 	g.term.init()
 }
 
@@ -16,8 +26,9 @@ func (g Game) end() {
 }
 
 func (g Game) draw() {
-	g.m.draw(g.term)
-	g.player.draw(g.term)
+	g.display_state = g.active_state
+	g.display_state.m.draw(g.term)
+	g.display_state.player.draw(g.term)
 	g.term.flush()
 }
 
@@ -29,32 +40,32 @@ func (game Game) loop() {
 			break
 		}
 		if ev == 'k' {
-			game.player.loc.y -= 1
+			game.active_state.player.loc.y -= 1
 		}
 		if ev == 'j' {
-			game.player.loc.y += 1
+			game.active_state.player.loc.y += 1
 		}
 		if ev == 'h' {
-			game.player.loc.x -= 1
+			game.active_state.player.loc.x -= 1
 		}
 		if ev == 'l' {
-			game.player.loc.x += 1
+			game.active_state.player.loc.x += 1
 		}
 		if ev == 'y' {
-			game.player.loc.y -= 1
-			game.player.loc.x -= 1
+			game.active_state.player.loc.y -= 1
+			game.active_state.player.loc.x -= 1
 		}
 		if ev == 'u' {
-			game.player.loc.y -= 1
-			game.player.loc.x += 1
+			game.active_state.player.loc.y -= 1
+			game.active_state.player.loc.x += 1
 		}
 		if ev == 'b' {
-			game.player.loc.y += 1
-			game.player.loc.x -= 1
+			game.active_state.player.loc.y += 1
+			game.active_state.player.loc.x -= 1
 		}
 		if ev == 'n' {
-			game.player.loc.y += 1
-			game.player.loc.x += 1
+			game.active_state.player.loc.y += 1
+			game.active_state.player.loc.x += 1
 		}
 	}
 }
