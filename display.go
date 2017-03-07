@@ -12,14 +12,14 @@ type Color uint16
 
 const (
 	DefaultColor Color = iota
-	Black
-	Red
-	Green
-	Yellow
-	Blue
-	Magenta
-	Cyan
-	White
+	Black              = 0x1
+	Red                = 0x2
+	Green              = 0x3
+	Yellow             = 0x4
+	Blue               = 0x5
+	Magenta            = 0x6
+	Cyan               = 0x7
+	White              = 0x8
 )
 
 type Terminal interface {
@@ -52,6 +52,7 @@ func (t tboxterm) draw_str(x, y int, s string) {
 
 func (t tboxterm) init() {
 	termbox.Init()
+	termbox.SetOutputMode(termbox.Output256)
 	termbox.Clear(termbox.ColorWhite, termbox.ColorBlack)
 }
 
