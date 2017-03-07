@@ -40,5 +40,21 @@ func (game Game) loop() {
 		if ev == 'l' {
 			game.player.loc.x += 1
 		}
+		if ev == 'y' {
+			game.player.loc.y -= 1
+			game.player.loc.x -= 1
+		}
+		if ev == 'u' {
+			game.player.loc.y -= 1
+			game.player.loc.x += 1
+		}
+		if ev == 'b' {
+			game.player.loc.y += 1
+			game.player.loc.x -= 1
+		}
+		if ev == 'n' {
+			game.player.loc.y += 1
+			game.player.loc.x += 1
+		}
 	}
 }
