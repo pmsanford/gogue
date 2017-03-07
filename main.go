@@ -1,10 +1,5 @@
 package main
 
-import (
-	//"fmt"
-	"github.com/nsf/termbox-go"
-)
-
 func main() {
 	game := Game{term: GetTerminal(), m: CreateMap(), player: Player{hp: 100, loc: Location{x: 5, y: 5}, char: '@'}}
 	game.init()
@@ -12,22 +7,24 @@ func main() {
 
 	game.draw()
 
+	input := GetInput()
+
 	for {
 		game.draw()
-		ev := termbox.PollEvent()
-		if ev.Ch == 'q' {
+		ev := input.getchar()
+		if ev == 'q' {
 			break
 		}
-		if ev.Ch == 'k' {
+		if ev == 'k' {
 			game.player.loc.y -= 1
 		}
-		if ev.Ch == 'j' {
+		if ev == 'j' {
 			game.player.loc.y += 1
 		}
-		if ev.Ch == 'h' {
+		if ev == 'h' {
 			game.player.loc.x -= 1
 		}
-		if ev.Ch == 'l' {
+		if ev == 'l' {
 			game.player.loc.x += 1
 		}
 	}
