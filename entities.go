@@ -21,14 +21,12 @@ func (p Player) draw(term Terminal) {
 	term.draw_char_ex(p.loc.x, p.loc.y, p.char, p.color, DefaultColor)
 }
 
-func (p Player) next() {
-	if Red == p.color {
+func (p *Player) next() {
+	if p.color == Red {
 		p.color = White
-	}
-	if White == p.color {
+	} else if p.color == White {
 		p.color = Green
-	}
-	if Green == p.color {
+	} else if p.color == Green {
 		p.color = Red
 	}
 }

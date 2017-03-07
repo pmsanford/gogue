@@ -1,6 +1,8 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 type Game struct {
 	term          Terminal
@@ -15,46 +17,49 @@ type game_state struct {
 	running bool
 }
 
-func new_game() Game {
-	return Game{term: GetTerminal(), active_state: game_state{m: CreateMap(), player: Player{hp: 100, loc: Location{x: 5, y: 5}, char: '@', color: Red}}, input: GetInput()}
+func (state game_state) copy_to(other game_state) {
+	other.m = state.m
+	other.player = state.player
+	other.running = state.running
 }
 
-func (g Game) init() {
+func new_game() Game {
+	return Game{term: GetTerminal(), active_state: game_state{m: CreateMap(), player: Player{hp: 100, loc: Location{x: 5, y: 5}, char: '@', color: Red}, running: true}, input: GetInput()}
+}
+
+func (g *Game) init() {
+	g.term.init()
 	g.blit()
 	go g.draw_loop()
-	g.term.init()
 }
 
 func (g Game) end() {
 	g.term.close()
 }
 
-func (g Game) draw_loop() {
+func (g *Game) draw_loop() {
 	for g.display_state.running {
+		g.draw()
 		g.display_state.m.next()
 		g.display_state.player.next()
-		g.draw()
 		time.Sleep(100 * time.Millisecond)
 	}
 }
 
-func (g Game) draw() {
+func (g *Game) draw() {
 	g.display_state.m.draw(g.term)
 	g.display_state.player.draw(g.term)
 	g.term.flush()
-	g.display_state.m.next()
-	g.display_state.player.next()
 }
 
-func (g Game) blit() {
+func (g *Game) blit() {
 	g.display_state = g.active_state
 }
 
-func (game Game) loop() {
+func (game *Game) loop() {
 	for {
 		game.blit()
-		ev := 'z'
-		time.Sleep(1 * time.Second)
+		ev := game.input.getchar()
 		if ev == 'q' {
 			break
 		}
