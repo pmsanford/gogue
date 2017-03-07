@@ -1,5 +1,7 @@
 package main
 
+import "time"
+
 type Game struct {
 	term          Terminal
 	active_state  game_state
@@ -8,8 +10,9 @@ type Game struct {
 }
 
 type game_state struct {
-	m      Map
-	player Player
+	m       Map
+	player  Player
+	running bool
 }
 
 func new_game() Game {
@@ -17,7 +20,8 @@ func new_game() Game {
 }
 
 func (g Game) init() {
-	g.display_state = g.active_state
+	g.blit()
+	go g.draw_loop()
 	g.term.init()
 }
 
@@ -25,17 +29,32 @@ func (g Game) end() {
 	g.term.close()
 }
 
+func (g Game) draw_loop() {
+	for g.display_state.running {
+		g.display_state.m.next()
+		g.display_state.player.next()
+		g.draw()
+		time.Sleep(100 * time.Millisecond)
+	}
+}
+
 func (g Game) draw() {
-	g.display_state = g.active_state
 	g.display_state.m.draw(g.term)
 	g.display_state.player.draw(g.term)
 	g.term.flush()
+	g.display_state.m.next()
+	g.display_state.player.next()
+}
+
+func (g Game) blit() {
+	g.display_state = g.active_state
 }
 
 func (game Game) loop() {
 	for {
-		game.draw()
-		ev := game.input.getchar()
+		game.blit()
+		ev := 'z'
+		time.Sleep(1 * time.Second)
 		if ev == 'q' {
 			break
 		}

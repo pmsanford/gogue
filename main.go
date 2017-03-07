@@ -5,6 +5,5 @@ func main() {
 	game.init()
 	defer game.end()
 
-	game.draw()
 	game.loop()
 }

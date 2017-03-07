@@ -2,6 +2,7 @@ package main
 
 type Map interface {
 	draw(term Terminal)
+	next()
 }
 
 type imap struct {
@@ -16,6 +17,8 @@ func (m imap) draw(term Terminal) {
 		}
 	}
 }
+
+func (m imap) next() {}
 
 func CreateMap() Map {
 	m := imap{make([]rune, 1600), 80, 20}

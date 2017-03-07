@@ -6,6 +6,7 @@ import (
 
 type Drawable interface {
 	draw(term Terminal)
+	next()
 }
 
 type Color uint16
