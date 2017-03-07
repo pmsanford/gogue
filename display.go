@@ -25,6 +25,7 @@ const (
 type Terminal interface {
 	init()
 	draw_char(x, y int, c rune)
+	draw_char_ex(x, y int, c rune, fg, bg Color)
 	draw_str(x, y int, s string)
 	flush()
 	close()

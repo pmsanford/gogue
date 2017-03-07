@@ -10,11 +10,12 @@ type Location struct {
 }
 
 type Player struct {
-	hp   int
-	loc  Location
-	char rune
+	hp    int
+	loc   Location
+	char  rune
+	color Color
 }
 
 func (p Player) draw(term Terminal) {
-	term.draw_char(p.loc.x, p.loc.y, p.char)
+	term.draw_char_ex(p.loc.x, p.loc.y, p.char, p.color, DefaultColor)
 }
