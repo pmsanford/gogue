@@ -8,7 +8,6 @@ type Game struct {
 	term          Terminal
 	active_state  game_state
 	display_state game_state
-	input         Input
 }
 
 type game_state struct {
@@ -24,7 +23,8 @@ func (state game_state) copy_to(other game_state) {
 }
 
 func new_game() Game {
-	return Game{term: GetTerminal(), active_state: game_state{m: CreateMap(), player: Player{hp: 100, loc: Location{x: 5, y: 5}, char: '@', color: Red}, running: true}, input: GetInput()}
+	input := GetInput()
+	return Game{term: GetTerminal(), active_state: game_state{m: CreateMap(), player: Player{hp: 100, loc: Location{x: 5, y: 5}, char: '@', color: Red, input: input}, running: true}}
 }
 
 func (g *Game) init() {
@@ -59,37 +59,8 @@ func (g *Game) blit() {
 func (game *Game) loop() {
 	for {
 		game.blit()
-		ev := game.input.getchar()
-		if ev == 'q' {
+		if game.active_state.player.act() == Quit {
 			break
-		}
-		if ev == 'k' {
-			game.active_state.player.loc.y -= 1
-		}
-		if ev == 'j' {
-			game.active_state.player.loc.y += 1
-		}
-		if ev == 'h' {
-			game.active_state.player.loc.x -= 1
-		}
-		if ev == 'l' {
-			game.active_state.player.loc.x += 1
-		}
-		if ev == 'y' {
-			game.active_state.player.loc.y -= 1
-			game.active_state.player.loc.x -= 1
-		}
-		if ev == 'u' {
-			game.active_state.player.loc.y -= 1
-			game.active_state.player.loc.x += 1
-		}
-		if ev == 'b' {
-			game.active_state.player.loc.y += 1
-			game.active_state.player.loc.x -= 1
-		}
-		if ev == 'n' {
-			game.active_state.player.loc.y += 1
-			game.active_state.player.loc.x += 1
 		}
 	}
 }
