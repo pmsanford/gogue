@@ -8,12 +8,13 @@ type Game struct {
 	term          Terminal
 	active_state  game_state
 	display_state game_state
+	generator	MonsterGenerator
 }
 
 type game_state struct {
-	m       Map
-	player  Player
-	running bool
+	m        Map
+	player   Player
+	running  bool
 	monsters []Entity
 }
 
@@ -25,13 +26,27 @@ func (state game_state) copy_to(other game_state) {
 
 func new_game() Game {
 	input := GetInput()
-	ng := Game{term: GetTerminal(), active_state: game_state{m: CreateMap(), player: Player{hp: 100, loc: Location{x: 5, y: 5}, char: '@', color: Red, input: input}, running: true, monsters: make([]Entity, 0)}}
-	ng.active_state.monsters = append(ng.active_state.monsters, &Goblin{char: 'g', hp: 10, loc: Location{x: 10, y: 10}})
+	ng := Game{
+		term: GetTerminal(),
+		active_state: game_state{
+			m: CreateMap(),
+			player: Player{
+				hp: 100,
+				loc: Location{x: 5, y: 5},
+				char: '@',
+				color: Red,
+				input: input},
+			running: true,
+			monsters: make([]Entity, 0)},
+		generator: MonsterGenerator{
+			monster_table: map[int]MonsterType{100: Goblin}}}
 	return ng
 }
 
 func (g *Game) init() {
 	g.term.init()
+	mon := g.generator.new_monster()
+	g.active_state.monsters = append(g.active_state.monsters, &mon)
 	g.blit()
 	go g.draw_loop()
 }

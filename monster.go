@@ -2,13 +2,19 @@ package main
 
 import "math/rand"
 
-type Goblin struct {
-	char	rune
-	hp	int
-	loc	Location
+type Monster struct {
+	char rune
+	hp   int
+	loc  Location
 }
 
-func (goblin *Goblin) act() ActResult {
+type MonsterType uint16
+
+const (
+	Goblin MonsterType = iota
+)
+
+func (goblin *Monster) act() ActResult {
 	dir := rand.Intn(4)
 	switch dir {
 	case 0:
@@ -27,8 +33,34 @@ func (goblin *Goblin) act() ActResult {
 	return None
 }
 
-func (goblin *Goblin) draw(term Terminal) {
-	term.draw_char_ex(goblin.loc.x, goblin.loc.y, goblin.char, Green, DefaultColor);
+func (goblin *Monster) draw(term Terminal) {
+	term.draw_char_ex(goblin.loc.x, goblin.loc.y, goblin.char, Green, DefaultColor)
 }
 
-func (goblin *Goblin) next() {}
+func (goblin *Monster) next() {}
+
+type MonsterGenerator struct {
+	monster_table map[int]MonsterType
+}
+
+func (generator MonsterGenerator) get_monster(typ MonsterType) Monster {
+	switch typ {
+	case Goblin:
+		return Monster{'g', 100, Location{1, 1}}
+	}
+	return Monster{}
+}
+
+func (generator MonsterGenerator) new_monster() Monster {
+	max := 0
+	for k := range generator.monster_table {
+		max = k
+	}
+	mon_val := rand.Intn(max)
+	for k, v := range generator.monster_table {
+		if mon_val < k {
+			return generator.get_monster(v)
+		}
+	}
+	return generator.get_monster(Goblin)
+}
