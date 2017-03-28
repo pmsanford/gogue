@@ -14,6 +14,7 @@ type game_state struct {
 	m       Map
 	player  Player
 	running bool
+	monsters []Entity
 }
 
 func (state game_state) copy_to(other game_state) {
@@ -24,7 +25,9 @@ func (state game_state) copy_to(other game_state) {
 
 func new_game() Game {
 	input := GetInput()
-	return Game{term: GetTerminal(), active_state: game_state{m: CreateMap(), player: Player{hp: 100, loc: Location{x: 5, y: 5}, char: '@', color: Red, input: input}, running: true}}
+	ng := Game{term: GetTerminal(), active_state: game_state{m: CreateMap(), player: Player{hp: 100, loc: Location{x: 5, y: 5}, char: '@', color: Red, input: input}, running: true, monsters: make([]Entity, 0)}}
+	ng.active_state.monsters = append(ng.active_state.monsters, &Goblin{char: 'g', hp: 10, loc: Location{x: 10, y: 10}})
+	return ng
 }
 
 func (g *Game) init() {
@@ -49,6 +52,9 @@ func (g *Game) draw_loop() {
 func (g *Game) draw() {
 	g.display_state.m.draw(g.term)
 	g.display_state.player.draw(g.term)
+	for _, m := range g.display_state.monsters {
+		m.draw(g.term)
+	}
 	g.term.flush()
 }
 
@@ -61,6 +67,9 @@ func (game *Game) loop() {
 		game.blit()
 		if game.active_state.player.act() == Quit {
 			break
+		}
+		for _, m := range game.active_state.monsters {
+			m.act()
 		}
 	}
 }
