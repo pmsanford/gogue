@@ -18,8 +18,8 @@ type Player struct {
 	input Input
 }
 
-func (p Player) draw(term Terminal) {
-	term.draw_char_ex(p.loc.x, p.loc.y, p.char, p.color, DefaultColor)
+func (player Player) draw(term Terminal) {
+	term.draw_char_ex(player.loc.x, player.loc.y, player.char, player.color, DefaultColor)
 }
 
 type ActResult uint16
@@ -65,12 +65,12 @@ func (player *Player) act() ActResult {
 	return None
 }
 
-func (p *Player) next() {
-	if p.color == Red {
-		p.color = White
-	} else if p.color == White {
-		p.color = Green
-	} else if p.color == Green {
-		p.color = Red
+func (player *Player) next() {
+	if player.color == Red {
+		player.color = White
+	} else if player.color == White {
+		player.color = Green
+	} else if player.color == Green {
+		player.color = Red
 	}
 }
