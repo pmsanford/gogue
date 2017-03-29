@@ -12,25 +12,33 @@ type MonsterType uint16
 
 const (
 	Goblin MonsterType = iota
+	Troll
 )
 
-func (goblin *Monster) act() ActResult {
+func (goblin *Monster) act(lvl LevelInfo) ActResult {
 	dir := rand.Intn(4)
-	switch dir {
-	case 0:
-		goblin.loc.y -= 1
-		break
-	case 1:
-		goblin.loc.x += 1
-		break
-	case 2:
-		goblin.loc.y += 1
-		break
-	case 3:
-		goblin.loc.x -= 1
-		break
+	newloc := goblin.loc
+	for {
+		switch dir {
+		case 0:
+			newloc.y -= 1
+			break
+		case 1:
+			newloc.x += 1
+			break
+		case 2:
+			newloc.y += 1
+			break
+		case 3:
+			newloc.x -= 1
+			break
+		}
+		if lvl.check(newloc) == Empty{
+			break
+		}
 	}
-	return None
+	goblin.loc = newloc
+	return Acted
 }
 
 func (goblin *Monster) draw(term Terminal) {
@@ -46,7 +54,9 @@ type MonsterGenerator struct {
 func (generator MonsterGenerator) get_monster(typ MonsterType) Monster {
 	switch typ {
 	case Goblin:
-		return Monster{'g', 100, Location{1, 1}}
+		return Monster{'g', 100, Location{5, 5}}
+	case Troll:
+		return Monster{'T', 150, Location{5, 5}}
 	}
 	return Monster{}
 }

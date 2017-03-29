@@ -3,7 +3,7 @@ package main
 type Entity interface {
 	draw(term Terminal)
 	next()
-	act() ActResult
+	act(lvl LevelInfo) ActResult
 }
 
 type Location struct {
@@ -26,41 +26,47 @@ type ActResult uint16
 
 const (
 	None ActResult = iota
+	Acted
 	Quit
 )
 
-func (player *Player) act() ActResult {
+func (player *Player) act(lvl LevelInfo) ActResult {
 	ev := player.input.getchar()
 	if ev == 'q' {
 		return Quit
 	}
+	newloc := player.loc
 	if ev == 'k' {
-		player.loc.y -= 1
+		newloc.y -= 1
 	}
 	if ev == 'j' {
-		player.loc.y += 1
+		newloc.y += 1
 	}
 	if ev == 'h' {
-		player.loc.x -= 1
+		newloc.x -= 1
 	}
 	if ev == 'l' {
-		player.loc.x += 1
+		newloc.x += 1
 	}
 	if ev == 'y' {
-		player.loc.y -= 1
-		player.loc.x -= 1
+		newloc.y -= 1
+		newloc.x -= 1
 	}
 	if ev == 'u' {
-		player.loc.y -= 1
-		player.loc.x += 1
+		newloc.y -= 1
+		newloc.x += 1
 	}
 	if ev == 'b' {
-		player.loc.y += 1
-		player.loc.x -= 1
+		newloc.y += 1
+		newloc.x -= 1
 	}
 	if ev == 'n' {
-		player.loc.y += 1
-		player.loc.x += 1
+		newloc.y += 1
+		newloc.x += 1
+	}
+	if lvl.check(newloc) == Empty {
+		player.loc = newloc
+		return Acted
 	}
 	return None
 }

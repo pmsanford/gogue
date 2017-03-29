@@ -8,11 +8,18 @@ type Game struct {
 	term          Terminal
 	active_state  game_state
 	display_state game_state
-	generator	MonsterGenerator
+	generator     MonsterGenerator
 }
 
+type LocationType uint16
+
+const (
+	Empty LocationType = iota
+	Blocked
+)
+
 type game_state struct {
-	m        Map
+	m        imap
 	player   Player
 	running  bool
 	monsters []Entity
@@ -31,12 +38,12 @@ func new_game() Game {
 		active_state: game_state{
 			m: CreateMap(),
 			player: Player{
-				hp: 100,
-				loc: Location{x: 5, y: 5},
-				char: '@',
+				hp:    100,
+				loc:   Location{x: 5, y: 5},
+				char:  '@',
 				color: Red,
 				input: input},
-			running: true,
+			running:  true,
 			monsters: make([]Entity, 0)},
 		generator: MonsterGenerator{
 			monster_table: map[int]MonsterType{100: Goblin}}}
@@ -78,13 +85,20 @@ func (g *Game) blit() {
 }
 
 func (game *Game) loop() {
+Quit:
 	for {
 		game.blit()
-		if game.active_state.player.act() == Quit {
-			break
+		for {
+			result := game.active_state.player.act(&game.active_state.m)
+			if result == Quit {
+				break Quit
+			}
+			if result == Acted {
+				break
+			}
 		}
 		for _, m := range game.active_state.monsters {
-			m.act()
+			m.act(&game.active_state.m)
 		}
 	}
 }
