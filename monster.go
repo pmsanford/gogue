@@ -1,6 +1,8 @@
 package main
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 type Monster struct {
 	char rune
@@ -16,9 +18,10 @@ const (
 )
 
 func (goblin *Monster) act(lvl LevelInfo) ActResult {
-	dir := rand.Intn(4)
 	newloc := goblin.loc
 	for {
+		newloc = goblin.loc
+		dir := rand.Intn(4)
 		switch dir {
 		case 0:
 			newloc.y -= 1
